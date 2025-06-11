@@ -1,0 +1,40 @@
+version: '2.1'
+
+services:
+  kafka:
+    image: bitnami/kafka:latest
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_SERVERS=zookeeper:2181
+      - KAFKA_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_LOG_DIRS=/bitnami/kafka/data
+      - KAFKA_DATA_DIR=/bitnami/kafka/data
+    ports:
+      - '9092:9092'
+    volumes:
+      - kafka-data:/bitnami/kafka
+
+  zookeeper:
+    image: bitnami/zookeeper:latest
+    environment:
+      - ZOOKEEPER_CLIENT_PORT=2181
+      - ZOOKEEPER_TICK_TIME=2000
+    ports:
+      - '2181:2181'
+    volumes:
+      - zookeeper-data:/bitnami/zookeeper
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=local
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
+    ports:
+      - '8080:8080'
+
+volumes:
+  kafka-data:
+    driver: local
+  zookeeper-data:
+    driver: local
